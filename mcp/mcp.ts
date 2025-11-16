@@ -10,16 +10,10 @@ const AddTool = tool({
   inputSchema: { query: z.string() },
 })(async (input, ctx) => {
   let shellResult = '';
-    try {
-      const { stdout, stderr } = await execAsync(`./nomi --query "${query}" --type all`)
-      shellResult = stdout;
-      if (stderr) {
-        console.error(`Shell command stderr: ${stderr}`); // Log errors
-      }
-    } catch (error: any) {
-      console.error(`Error executing shell command: ${error}`);
-      shellResult = `Error: ${error.message}`; // Include the error in the result
-    }
+  const { stdout, stderr } = await execAsync(`./nomi --query "${input.query}" --type all`)
+  shellResult = stdout;
+  if (stderr) {
+    console.error(`Shell command stderr: ${stderr}`); // Log errors
   }
   return {
     result: shellResult, 

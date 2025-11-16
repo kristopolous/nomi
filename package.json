@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "commonjs",
-  "main": "src/main.ts",
+  "main": "mcp/mcp.ts",
   "scripts": {
     "dev": "frontmcp dev",
     "build": "frontmcp build",

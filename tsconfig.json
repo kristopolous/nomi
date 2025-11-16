@@ -12,12 +12,12 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "mcp",
     "types": [
       "node"
     ]
   },
   "include": [
-    "src/**/*"
+    "mcp/**/*"
   ]
 }
