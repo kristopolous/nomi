@@ -1,6 +1,30 @@
 {
+  "name": "nomi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "frontmcp dev",
+    "build": "frontmcp build",
+    "inspect": "frontmcp inspector",
+    "doctor": "frontmcp doctor"
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
+  },
   "dependencies": {
     "@frontmcp/sdk": "^0.3.0",
-    "linkup-sdk": "^2.5.0"
+    "@frontmcp/plugins": "^0.3.0",
+    "@frontmcp/adapters": "^0.3.0",
+    "zod": "^3.23.8",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "frontmcp": "0.3.0",
+    "tsx": "^4.20.6",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.3"
   }
 }
