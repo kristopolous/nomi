@@ -43,34 +43,18 @@ def get_users():
     if os.path.isdir('.git'):
         git_users(user_dict)
 
+    return me
+
 def register_users():
     for email in user_dict.keys():
-        res = fastino.register_user(
+        user_dict[email]['id'] = fastino.register_user(
             email=email,
             traits={"name": user_dict[email].get('name')}
         ).user_id
         logging.info(f'Registing {email}')
 
-get_users()
-register_users()
-sys.exit()
-
-# Register a user
-user_id = response.user_id
-
-# Ingest conversation data
-fastino.ingest_data(
-    user_id=user_id,
-    source="slack",
-    message_history=[
-        {"role": "user", "content": "I love hiking", "timestamp": "2025-01-01T10:00:00Z"}
-    ]
-)
 
 # Fetch the user's profile summary
-summary = fastino.get_summary(user_id=user_id)
-print(summary.summary)
-sys.exit()
 
 
 @app.command()
@@ -86,7 +70,8 @@ def main(query: str = typer.Option(..., help="The user's query about what librar
 
     caching_solutions = []
     if type == "system" or type == "all":
-        codebase_info = get_codebase_info()
+        logging.debug("Extracting info")
+        codebase_info = code_query(query)
         query = f"With this codebase info {codebase_info}, {query}"
 
     if type == "personal" or type == "all":
@@ -94,32 +79,35 @@ def main(query: str = typer.Option(..., help="The user's query about what librar
         query = f"With this user info {fastino_info}, {query}"
 
     result = web_query(query)
+    print(result)
 
 
 def get_fastino_info():
-    """
-    Uses Fastino AI to identify the user.
-    """
-    # Simulate Fastino AI integration
-    return "Fastino AI: User is interested in caching solutions."
+    me = get_users()
+    register_users()
+    team = ["The following is a description of the team"]
 
-def get_codebase_info():
-    """
-    Uses the main.ts MCP server to find information about the install and existing codebase.
-    """
-    try:
-        command = "echo '{\"tool_name\": \"getSystemInfo\", \"arguments\": {}}' | ts-node my-app/src/main.ts"
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
-        return result.stdout
-    except subprocess.CalledProcessError as e:
-        return json.dumps({"error": f"Error: {e.stderr}"})
+    for k,v in user_dict.items():
+        if k == me:
+            who = '(primary user)'
+        else:
+            who = '(team member)'
+
+        print(v)
+
+        user_dict[k]['summary'] = fastino.get_summary(user_id=v.get('id')).summary
+
+        team.append(f"## {who} {v.get('name')}\n{v.get('summary')}\n\n")
+
+    return "\n".join(team)
+
+
+def code_query(query: str):
+    return run(f'./repo_info.sh "{query}"')
+
 
 def web_query(query: str):
-    """
-    Uses the Linkup library to do a web search for a query string.
-    """
     try:
-
         client = LinkupClient(api_key=os.getenv("LINKUP_API_KEY"))
 
         # Perform a search query

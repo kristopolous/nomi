@@ -1,0 +1,8 @@
+linkup-sdk
+python-dotenv
+typer
+click
+flask
+fastmcp
+mcp
+personalization-client@https://fastino-ai.github.io/Pioneer/simple/
